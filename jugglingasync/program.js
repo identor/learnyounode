@@ -1,5 +1,6 @@
 var http = require('http'),
     BufferList = require('bl'),
+    GetUrl = require('./geturl.js'),
     cursor = 0,
     queue = [],
     urls = process.argv.slice(-3);
@@ -16,15 +17,11 @@ var logData = function(index, data) {
 };
 
 for (var i = 0; i < urls.length; i++) {
-  var bl = new BufferList(function(err, data) {
+  var geturl = new GetUrl(urls[i]);
+  var url = geturl.get(function(err, data, url) {
     if (err) {
       console.error(err);
     }
-    data = data.toString();
-    logData(i, data);
-  });
-  console.log(index);
-  http.get(urls[i], function(response) {
-    response.pipe(bl);
+    logData(urls.indexOf(url), data);
   });
 }
